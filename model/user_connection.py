@@ -1,4 +1,5 @@
 import psycopg 
+import json
 
 class UserConnection():
     conn = None
@@ -14,7 +15,21 @@ class UserConnection():
             data = cur.execute("""SELECT * FROM "employees"
                               """)    
             rows = data.fetchall()
-        return  rows  
+  
+            column_names = [description[0] for description in cur.description]
+
+            result_list = []
+            for row in rows:
+                row_dict = {}
+                for i, col_name in enumerate(column_names):
+                    row_dict[col_name] = row[i]
+                result_list.append(row_dict)
+
+            json_output = json.dumps(result_list, indent=4)
+            
+            print(json_output)
+
+        return  json.loads(json_output)
     
     def  write(self,data):
           with self.conn.cursor() as cur:
