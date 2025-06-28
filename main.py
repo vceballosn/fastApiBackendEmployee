@@ -13,7 +13,6 @@ async def root():
 
     return conn.get_all()
 
-
 @app.post("/api/insert/")
 def insert(user_data:UserSchema):
     data = user_data.dict()
@@ -21,3 +20,6 @@ def insert(user_data:UserSchema):
     print(data)
     conn.write(data)
 
+@app.get("/api/user/{id}")
+def get_id(id:str):
+    return conn.get_id(id)

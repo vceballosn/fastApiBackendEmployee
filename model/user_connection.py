@@ -1,5 +1,5 @@
 import psycopg 
-import json
+from utilities import utility # Importa la función desde tu archivo de utilidades
 
 class UserConnection():
     conn = None
@@ -11,25 +11,21 @@ class UserConnection():
             self.conn.close()
 
     def get_all(self):
+        print("get all")
         with self.conn.cursor() as cur:     
             data = cur.execute("""SELECT * FROM "employees"
                               """)    
-            rows = data.fetchall()
-  
-            column_names = [description[0] for description in cur.description]
-
-            result_list = []
-            for row in rows:
-                row_dict = {}
-                for i, col_name in enumerate(column_names):
-                    row_dict[col_name] = row[i]
-                result_list.append(row_dict)
-
-            json_output = json.dumps(result_list, indent=4)
-            
-            print(json_output)
-
-        return  json.loads(json_output)
+            json_output = utility.jsonFormat(cur,data)
+            print("get all ",json_output)
+        return  json_output
+    
+   
+    def get_id(self, id):
+        with self.conn.cursor() as cur:
+            data = cur.execute(""" SELECT * FROM "employees" WHERE id =%s """, (id,))
+            # dataId =  cur.fetchone()
+            json_output = utility.jsonFormat(cur,data)
+        return  json_output
     
     def  write(self,data):
           with self.conn.cursor() as cur:
