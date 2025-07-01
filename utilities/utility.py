@@ -27,3 +27,26 @@ def jsonFormat(cur, rows):
     
 
     return json.loads(json_output)
+
+def jsonFormatSingle(cur, row): # Cambié el nombre para distinguirla y 'rows' por 'row'
+    """
+    Formatea un único registro de base de datos a un diccionario.
+
+    Args:
+        cur: El objeto cursor de la base de datos, que contiene la descripción de las columnas.
+        row: Una tupla que representa una única fila de resultados.
+
+    Returns:
+        Un diccionario donde las claves son los nombres de las columnas
+        y los valores son los datos del registro.
+    """
+    if not row: # Si el registro es None o vacío, devuelve un diccionario vacío o None
+        return {} # O return None, dependiendo de tu manejo de errores
+        
+    column_names = [description[0] for description in cur.description]
+    row_dict = {}
+
+    for i, col_name in enumerate(column_names):
+        row_dict[col_name] = row[i]
+            
+    return row_dict
